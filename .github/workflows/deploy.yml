@@ -24,23 +24,19 @@ jobs:
           cd backend  # Move to the backend directory where your package.json is located
           npm install
 
-      - name: Install AWS SAM CLI
-        run: |
-          sudo apt-get install awscli -y
-          wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
-          unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
-          sudo ./sam-installation/install
-
+      # Remove the AWS SAM CLI installation step, as SAM is already installed
+      # Run the build command directly
       - name: Build SAM application
         run: |
-          cd backend  # Ensure you're in the right directory before running SAM commands
+          cd backend
           sam build
 
+      # Deploy the SAM application
       - name: Deploy SAM application
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
         run: |
-          cd backend  # Ensure you're in the right directory before deploying
+          cd backend
           sam deploy --no-confirm-changeset --stack-name event-survey-app --capabilities CAPABILITY_IAM
