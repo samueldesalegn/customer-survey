@@ -3,7 +3,7 @@ name: Deploy to AWS SAM
 on:
   push:
     branches:
-      - main  
+      - main  # Trigger the workflow on push to the main branch
 
 jobs:
   deploy:
@@ -16,10 +16,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'  
+          node-version: '18'
 
+      # Navigate to the backend folder where package.json is located
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd backend  # Move to the backend directory where your package.json is located
+          npm install
 
       - name: Install AWS SAM CLI
         run: |
@@ -29,7 +32,9 @@ jobs:
           sudo ./sam-installation/install
 
       - name: Build SAM application
-        run: sam build
+        run: |
+          cd backend  # Ensure you're in the right directory before running SAM commands
+          sam build
 
       - name: Deploy SAM application
         env:
@@ -37,4 +42,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
         run: |
+          cd backend  # Ensure you're in the right directory before deploying
           sam deploy --no-confirm-changeset --stack-name event-survey-app --capabilities CAPABILITY_IAM
