@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  FeedbackApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+
+  FeedbackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src/
+      Handler: lambdaHandler.lambdaHandler  # Lambda entry point
+      Runtime: nodejs18.x
+      MemorySize: 512
+      Timeout: 15
+      Events:
+        SubmitFeedbackApi:
+          Type: Api
+          Properties:
+            Path: /submit-feedback
+            Method: post
+            RestApiId: !Ref FeedbackApi
+        GetAllFeedbacksApi:
+          Type: Api
+          Properties:
+            Path: /feedbacks
+            Method: get
+            RestApiId: !Ref FeedbackApi
+
+  FeedbackTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: event_feedback
+      AttributeDefinitions:
+        - AttributeName: event_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: event_id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+Outputs:
+  FeedbackApiUrl:
+    Description: "URL for the feedback API"
+    Value: !Sub "https://${FeedbackApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
