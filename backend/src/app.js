@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import feedbackRoutes from './feedbackController.js';
+import feedbackRoutes from './feedbackRoutes.js'; // Correct import of the routes file
 
 const app = express();
 
@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json()); // Parse incoming JSON requests
 
-// Use the feedback routes
+// Use the feedback routes under the "/api" path
 app.use('/api', feedbackRoutes);
 
 export default app;
