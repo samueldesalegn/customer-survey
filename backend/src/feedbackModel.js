@@ -77,8 +77,10 @@ const FeedbackModel = {
 	saveFeedback: async (feedback) => {
 		// Validate feedback schema before saving
 		try {
+			console.log('Validating feedback:', feedback);  // Log feedback data before validation
 			validateFeedback(feedback);
 		} catch (error) {
+			console.error('Validation failed:', error.message);
 			throw new Error(`Invalid feedback data: ${error.message}`);
 		}
 
@@ -89,11 +91,12 @@ const FeedbackModel = {
 		};
 
 		try {
+			console.log('Saving feedback to DynamoDB with params:', params);  // Log DynamoDB params
 			// Save feedback to DynamoDB
 			await documentClient.put(params).promise();
 			console.log('Feedback saved successfully.');
 		} catch (error) {
-			console.error('Error saving feedback to DynamoDB:', error);
+			console.error('Error saving feedback to DynamoDB:', error);  // Log error
 			throw new Error('Error saving feedback to DynamoDB');
 		}
 	},
