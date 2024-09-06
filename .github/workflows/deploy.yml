@@ -11,12 +11,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Upgrade to v3 to remove Node.js 12 warning
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3  # Upgrade to v3 to remove Node.js 12 warning
         with:
-          node-version: '18'
+          node-version: '18'  # Use Node.js 18 explicitly
 
       # Navigate to the backend folder where package.json is located
       - name: Install dependencies
@@ -24,8 +24,7 @@ jobs:
           cd backend  # Move to the backend directory where your package.json is located
           npm install
 
-      # Remove the AWS SAM CLI installation step, as SAM is already installed
-      # Run the build command directly
+      # Use the pre-installed AWS SAM CLI
       - name: Build SAM application
         run: |
           cd backend
